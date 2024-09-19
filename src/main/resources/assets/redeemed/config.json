@@ -1,0 +1,37 @@
+{
+  "debug": false,
+  "storage": {
+    "type": "SQLITE",
+    "host": "localhost",
+    "port": 27017,
+    "database":  "redeemed",
+    "username": "root",
+    "password": "",
+    "properties": {
+      "useUnicode": true,
+      "characterEncoding": "utf8"
+    },
+    "pool_settings": {
+      "maxiumum_pool_size": 10,
+      "minimum_idle": 10,
+      "keep_alive_time": 0,
+      "connection_timeout": 30000,
+      "idle_timeout": 600000,
+      "max_lifetime": 1800000
+    }
+  },
+  "messages": {
+    "invalid_code": "<red>The code '<dark_red>{0}</dark_red>' is invalid!",
+    "already_redeemed": "<red>You have already redeemed the code '<dark_red>{0}</dark_red>'!",
+    "max_redeems":  "<red>The code '<dark_red>{0}</dark_red>' has reached the max redeems!",
+    "code_redeemed": "<green>Successfully redeemed the code '<dark_green>{0}</dark_red>'!"
+  },
+  "codes": {
+    "test": {
+      "max_uses": 1,
+      "commands": [
+        "give %player% minecraft:diamond 1"
+      ]
+    }
+  }
+}

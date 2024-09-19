@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "redeemed",
+  "version": "${version}",
+  "name": "Redeemed",
+  "description": "Redeem codes for rewards!",
+  "authors": [
+    "AmoAster",
+    "Stampede"
+  ],
+  "entrypoints": {
+    "main": [
+      "com.pokeskies.redeemed.Redeemed"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": ">=1.20.1"
+  },
+  "mixins": ["redeemed.mixins.json"],
+  "accessWidener": "redeemed.accesswidener"
+}
