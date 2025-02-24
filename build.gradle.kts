@@ -1,17 +1,10 @@
 @file:Suppress("UnstableApiUsage")
 
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.util.*
-import java.util.function.Function
-
-
 plugins {
     java
     idea
     id("quiet-fabric-loom") version ("1.7-SNAPSHOT")
-    kotlin("jvm") version ("1.9.22")
+    id("org.jetbrains.kotlin.jvm").version("2.0.0")
     `maven-publish`
 }
 val modId = project.properties["mod_id"].toString()
@@ -67,7 +60,8 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-$minecraftVersion:${project.properties["parchment_version"]}")
+        // TODO: Fix hardcoded minecraft version once Parchment updates
+        parchment("org.parchmentmc.data:parchment-1.21:${project.properties["parchment_version"]}")
     })
 
     modImplementation("net.fabricmc:fabric-loader:${project.properties["loader_version"].toString()}")
@@ -75,27 +69,19 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.properties["fabric_kotlin_version"].toString()}")
 
     // Adventure Text!
-    modImplementation(include("net.kyori:adventure-platform-fabric:5.9.0") {
+    modImplementation(include("net.kyori:adventure-platform-fabric:5.14.2") {
         exclude("com.google.code.gson")
         exclude("ca.stellardrift", "colonel")
         exclude("net.fabricmc")
     })
 
     // PermissionsAPI
-    modImplementation("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
+    modImplementation("me.lucko:fabric-permissions-api:0.3.1")
 
     // Placeholder Mods
 //    modImplementation("io.github.miniplaceholders:miniplaceholders-api:2.2.2")
 //    modImplementation("io.github.miniplaceholders:miniplaceholders-kotlin-ext:2.2.2")
 //    modImplementation("eu.pb4:placeholder-api:2.1.2+1.20.1")
-
-    // Cardinal Components API
-//    include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.2")?.let {
-//        modImplementation(it)
-//    }
-//    include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.2.2")?.let {
-//        modImplementation(it)
-//    }
 
     implementation(include("org.mongodb:mongodb-driver-sync:4.11.0")!!)
     implementation(include("org.mongodb:mongodb-driver-core:4.11.0")!!)
@@ -144,56 +130,17 @@ tasks.remapJar {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(17)
+    options.release.set(21)
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
     withSourcesJar()
 }
 
 tasks.withType<AbstractArchiveTask> {
     from("LICENSE") {
         rename { "${it}_${modId}" }
-    }
-}
-tasks.create("hydrate") {
-    doLast {
-        val applyFileReplacements: Function<String, String> = Function { path ->
-            path.replace("\$mod_name$", project.properties["mod_name"].toString())
-                .replace("\$mod_id$", project.properties["mod_id"].toString())
-                .replace("\$mod_group$", project.properties["mod_group"].toString())
-        }
-        val applyPathReplacements: Function<String, String> = Function { path ->
-            path.replace("\$mod_name$", project.properties["mod_name"].toString())
-                .replace("\$mod_id$", project.properties["mod_id"].toString())
-                .replace("\$mod_group$", project.properties["mod_group"].toString().replace(".", "/"))
-        }
-        project.extensions.getByType<JavaPluginExtension>().sourceSets.forEach { sourceSet ->
-            sourceSet.allSource.sourceDirectories.asFileTree.forEach { file ->
-                val newPath = Paths.get(applyPathReplacements.apply(file.path))
-                Files.createDirectories(newPath.parent)
-
-                if (!file.path.endsWith(".png")) {
-                    val lines =
-                        Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)
-                            .map { applyFileReplacements.apply(it) }
-                    Files.deleteIfExists(file.toPath())
-                    Files.write(
-                        newPath,
-                        lines
-                    )
-                } else {
-                    Files.move(file.toPath(), newPath)
-                }
-
-                var parent = file.parentFile
-                while (parent.listFiles()?.isEmpty() == true) {
-                    Files.deleteIfExists(parent.toPath())
-                    parent = parent.parentFile
-                }
-            }
-        }
     }
 }
