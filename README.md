@@ -1,7 +1,7 @@
 # Redeemed
 <img width="100" height="50" src="https://i.imgur.com/c1DH9VL.png" alt="Requires Fabric Kotlin"/> <img src="https://img.shields.io/badge/Enviroment-Server-purple" alt="Enviroment Server"> <a href="https://discord.gg/invite/cgBww275Fg" rel="noopener nofollow ugc"><img src="https://img.shields.io/discord/1158447623989116980?color=blue&amp;logo=discord&amp;label=Discord" alt="Discord"></a>
 
-A Fabric (1.20.1) server-sided code based redeeming system! Create "codes" that players use to redeem exclusive rewards.
+A Fabric server-sided code based redeeming system! Create "codes" that players use to redeem exclusive rewards.
 
 More information on configuration can be found on the [Wiki](https://github.com/PokeSkies/Redeemed/wiki)!
 
